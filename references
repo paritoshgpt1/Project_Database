@@ -2,6 +2,30 @@
   "referenceGuide":"Cite all the reference sources in the required format. Proper citations will help you avoid unnecessary trouble but does not make it acceptable to copy code. Read the course and university policy statements in this regard. When working with others, limit the discussion to block diagrams and arrows. Do not look at another students' code. Read the JSON semantics and make use of JSON validator from the Internet if needed.",
   "websites":[
     {
+      "title":"Series — pandas 0.24.1 documentation",
+      "url":"https://pandas.pydata.org/pandas-docs/stable/reference/series.html",
+      "code":"In Q1, to exclude the null values. I used dropna() function",
+      "description":"<additional information you may find necessary to provide>"
+    },
+    {
+      "title":"pandas.Series.str.contains — pandas 0.24.1 documentation",
+      "url":"https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Series.str.contains.html#pandas.Series.str.contains",
+      "code":"To ignore the case in search in Q1",
+      "description":"<additional information you may find necessary to provide>"
+    },
+    {
+      "title":"pandas.core.groupby.DataFrameGroupBy.filter — pandas 0.24.1 documentation",
+      "url":"https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.core.groupby.DataFrameGroupBy.filter.html",
+      "code":"To filter a DF in Q2 ans Q3",
+      "description":"<additional information you may find necessary to provide>"
+    },
+    {
+      "title":"pandas.DataFrame.merge — pandas 0.24.1 documentation",
+      "url":"https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.merge.html",
+      "code":"To merge 2 DF in Q3",
+      "description":"<additional information you may find necessary to provide>"
+    },
+    {
       "title":"<title of the page>",
       "url":"<url>",
       "code":"<explain in which part of your code did you use the snippet or idea>",
