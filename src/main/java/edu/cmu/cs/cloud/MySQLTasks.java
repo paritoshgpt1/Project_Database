@@ -249,7 +249,7 @@ public class MySQLTasks {
      */
     private static void q8() {
         String sql = "SELECT b.name FROM businesses b LEFT JOIN checkins c on b.business_id = c.business_id WHERE " +
-                "b.neighborhood = \"South Side\" AND b.name LIKE \"%Coast%\" COLLATE utf8_bin";
+                "b.neighborhood = \"South Side\" AND b.name LIKE \"%Coast%\" COLLATE latin1";
         executeDataManipulationQuery(sql);
     }
 
