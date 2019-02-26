@@ -288,7 +288,11 @@ public class MySQLTasks {
      * You are only allowed to edit the sql.
      */
     private static void q10() {
-        String sql = "";
+        String sql = "SELECT city, AVG(stars) as avg_stars\n" +
+                "FROM businesses b\n" +
+                "GROUP BY city\n" +
+                "ORDER BY avg_stars desc, city asc\n" +
+                "LIMIT 3";
         executeDataManipulationQuery(sql);
     }
 
