@@ -38,6 +38,12 @@
       "description":"<additional information you may find necessary to provide>"
     },
     {
+      "title":"Comparing Lists With Hamcrest",
+      "url":"http://haroonzone.github.io/comparing-lists-with-hamcrest/",
+      "code":"To compare list in hamcrest",
+      "description":"<additional information you may find necessary to provide>"
+    },
+    {
       "title":"<title of the page>",
       "url":"<url>",
       "code":"<explain in which part of your code did you use the snippet or idea>",

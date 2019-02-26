@@ -5,6 +5,8 @@ import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -13,7 +15,6 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.hamcrest.*;
 
 /**
  * Usage:
@@ -113,7 +114,7 @@ class RedisTest {
         assertEquals(1, redisClient.hset("myhash", "mykey2", "myval2"));
         assertEquals(0, redisClient.hset("myhash", "mykey1", "newval1"));
         assertNotEquals(1, redisClient.hset("myhash", "mykey2", "newval2"));
-        assertNotEquals(1, redisClient.hset("myhash", "mykey3", "myval3"));
+        assertNotEquals(0, redisClient.hset("myhash", "mykey3", "myval3"));
     }
 
     @Test
@@ -129,28 +130,73 @@ class RedisTest {
         redisClient.hset("myhash", "mykey1", "newval1");
         assertNotEquals("myval1", redisClient.hget("myhash", "mykey1"));
         assertEquals("newval1", redisClient.hget("myhash", "mykey1"));
+
+        assertNull(redisClient.hget("myhash", "mykey2"));
     }
 
     @Test
     void hgetall() {
         Redis redisClient = new Redis();
 
-        List expectedList = new LinkedList();
-        assertThat(expectedList, IsArrayContainingInOrder(redisClient.hgetall("myhash")));
+        List<String> expectedList = new LinkedList<>();
+        assertThat(expectedList, equalTo(redisClient.hgetall("myhash")));
+
+        redisClient.hset("myhash", "mykey1", "myval1");
+        redisClient.hset("myhash", "mykey2", "myval2");
+
+        assertThat(expectedList, not(redisClient.hgetall("myhash")));
+        expectedList.add("mykey1");
+        expectedList.add("myval1");
+        expectedList.add("mykey2");
+        expectedList.add("myval2");
+        assertThat(expectedList, containsInAnyOrder(redisClient.hgetall("myhash").toArray()));
     }
 
     @Test
     void llen() {
-        throw new RuntimeException("add test cases on your own");
+        Redis redisClient = new Redis();
+
+        assertEquals(0, redisClient.llen("mylist"));
+
+        redisClient.rpush("mylist", "val1");
+        assertNotEquals(0, redisClient.llen("mylist"));
+        assertEquals(1, redisClient.llen("mylist"));
+
+        redisClient.rpush("mylist", "val2");
+        assertNotEquals(1, redisClient.llen("mylist"));
+        assertEquals(2, redisClient.llen("mylist"));
+
+        redisClient.rpop("mylist");
+        assertNotEquals(2, redisClient.llen("mylist"));
+        assertEquals(1, redisClient.llen("mylist"));
+
     }
 
     @Test
     void rpush() {
-        throw new RuntimeException("add test cases on your own");
+        Redis redisClient = new Redis();
+
+        assertEquals(1, redisClient.rpush("mylist", "val1"));
+        assertEquals(2, redisClient.rpush("mylist", "val2"));
+        redisClient.rpop("mylist");
+        assertEquals(2, redisClient.rpush("mylist", "val2"));
+        assertNotEquals(4, redisClient.rpush("mylist", "val3"));
     }
 
     @Test
     void rpop() {
-        throw new RuntimeException("add test cases on your own");
+        Redis redisClient = new Redis();
+
+        assertNull(redisClient.rpop("mylist"));
+
+        redisClient.rpush("mylist", "val1");
+        assertNotNull(redisClient.rpop("mylist"));
+
+        redisClient.rpush("mylist", "val1");
+        assertEquals("val1", redisClient.rpop("mylist"));
+
+        redisClient.rpush("mylist", "val1");
+        redisClient.rpush("mylist", "val2");
+        assertEquals("val2", redisClient.rpop("mylist"));
     }
 }

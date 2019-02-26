@@ -1,8 +1,6 @@
 package edu.cmu.cs.cloud;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * A simplified version of Redis.
@@ -197,10 +195,18 @@ public class Redis {
         HashMap<String, String> m = (HashMap<String, String>) store.get(k);
         if (m == null) {
             m = new HashMap<>();
+            m.put(f, v);
             store.put(k, m);
+            return 1;
+        } else if (!m.containsKey(f)) {
+            m.put(f, v);
+            store.put(k, m);
+            return 1;
+        } else {
+            m.put(f, v);
+            store.put(k, m);
+            return 0;
         }
-        throw new UnsupportedOperationException(
-                "Waiting to be implemented");
     }
 
     /**
@@ -216,11 +222,10 @@ public class Redis {
         checkType(k, HASH);
         @SuppressWarnings("unchecked")
         HashMap<String, String> m = (HashMap<String, String>) store.get(k);
-        if (m == null) {
+        if (m == null || !m.containsKey(f)) {
             return null;
         }
-        throw new UnsupportedOperationException(
-                "Waiting to be implemented");
+        return m.get(f);
     }
 
     /**
@@ -242,8 +247,11 @@ public class Redis {
         if (m == null) {
             return list;
         }
-        throw new UnsupportedOperationException(
-                "Waiting to be implemented");
+        for (Map.Entry<String, String> each: m.entrySet()) {
+            list.add(each.getKey());
+            list.add(each.getValue());
+        }
+        return list;
     }
 
     /**
@@ -286,10 +294,10 @@ public class Redis {
         LinkedList<String> list = (LinkedList<String>) store.get(k);
         if (list == null) {
             list = new LinkedList<>();
-            store.put(k, list);
         }
-        throw new UnsupportedOperationException(
-                "Waiting to be implemented");
+        Collections.addAll(list, vs);
+        store.put(k, list);
+        return list.size();
     }
 
     /**
@@ -308,7 +316,6 @@ public class Redis {
         if (list == null) {
             return null;
         }
-        throw new UnsupportedOperationException(
-                "Waiting to be implemented");
+        return list.pollLast();
     }
 }
