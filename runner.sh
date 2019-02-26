@@ -200,7 +200,7 @@ q4() {
   #
   # Question:
   # Print column-wise descriptive statistics of review count and stars
-  # columns in reviews table 
+  # columns in businesses table
   #
   # 1. the metrics required are as follows (in a tabular view):
   #       review_count     stars  
