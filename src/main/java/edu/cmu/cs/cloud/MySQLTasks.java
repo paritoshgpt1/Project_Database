@@ -249,7 +249,7 @@ public class MySQLTasks {
      */
     private static void q8() {
         String sql = "SELECT b.name FROM businesses b LEFT JOIN checkins c on b.business_id = c.business_id WHERE " +
-                "b.neighborhood = \"South Side\" AND b.name LIKE \"%Coast%\" COLLATE latin1";
+                "b.neighborhood = \"South Side\" AND b.name LIKE \"%Coast%\" COLLATE latin1_bin";
         executeDataManipulationQuery(sql);
     }
 
@@ -268,7 +268,14 @@ public class MySQLTasks {
      * You are only allowed to edit the sql.
      */
     private static void q9() {
-        String sql = "";
+        String sql = "SELECT name\n" +
+                "FROM users\n" +
+                "WHERE useful IN\n" +
+                "(\n" +
+                "SELECT MAX(useful) as useful\n" +
+                "FROM tips t\n" +
+                "INNER JOIN users u USING (user_id)\n" +
+                ")";
         executeDataManipulationQuery(sql);
     }
 
