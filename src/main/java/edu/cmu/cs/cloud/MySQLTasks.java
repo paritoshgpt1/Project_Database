@@ -153,7 +153,7 @@ public class MySQLTasks {
      */
     private static void q5() {
         dropCustomIndexesOnReviews();
-        String sql = "SELECT `user_id` FROM reviews WHERE `cool`=(SELECT MAX(`cool`) FROM reviews)";
+        String sql = "SELECT user_id FROM reviews WHERE cool=(SELECT MAX(cool) FROM reviews)";
         executeDataManipulationQuery(sql);
         printScannedRows(sql);
     }
@@ -171,7 +171,7 @@ public class MySQLTasks {
      * The index should be a single-column index instead of a composite index.
      */
     private static void q6() {
-        String sql = "";
+        String sql = "CREATE INDEX cool_index ON reviews (cool)";
         executeDataDefinitionQuery(sql);
         printIndexColumnNames("reviews");
     }
