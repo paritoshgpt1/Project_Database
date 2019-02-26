@@ -248,7 +248,8 @@ public class MySQLTasks {
      * You are only allowed to edit the sql.
      */
     private static void q8() {
-        String sql = "";
+        String sql = "SELECT b.name FROM businesses b LEFT JOIN checkins c on b.business_id = c.business_id AND " +
+                "b.neighborhood = 'South Side' AND b.name LIKE '%Coast%";
         executeDataManipulationQuery(sql);
     }
 
