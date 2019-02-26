@@ -164,7 +164,7 @@ public class MySQLTasks {
      * A database index is a data structure that improves the speed of data
      * retrieval.
      * Identify the column in the reviews table that will improve the
-     * performance of the query in question 4, and create a single-column
+     * performance of the query in question 5, and create a single-column
      * index.
      *
      * A custom index name is needed.
@@ -211,19 +211,19 @@ public class MySQLTasks {
      * performance. The template will do this for you and you only need to
      * focus on the sql query.
      *
-     * If you have created a proper index in q5, the number of scanned rows
-     * will be much smaller than the prediction in q4.
+     * If you have created a proper index in q6, the number of scanned rows
+     * will be much smaller than the prediction in q5.
      *
      * You are only allowed to edit the sql.
      *
-     * The generated output by executing q6 will be:
+     * The generated output by executing q7 will be:
      * <pre>
      * result
      * number_of_scanned_rows
      * </pre>
      */
     private static void q7() {
-        String sql = "";
+        String sql = "SELECT user_id FROM reviews WHERE cool=(SELECT MAX(cool) FROM reviews)";
         executeDataManipulationQuery(sql);
         printScannedRows(sql);
     }
