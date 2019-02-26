@@ -122,7 +122,8 @@ q1() {
   #
   # Standard output format:
   # <number>
-  :
+  # gawk 'BEGIN { FS = "\t" } tolower($8) ~ /las vegas/' yelp_academic_dataset_business.tsv | wc -l 
+  PYTHONIOENCODING=UTF-8 python3 q1.py
 }
 
 q2() {
@@ -153,7 +154,7 @@ q2() {
   #
   # Standard output format:
   # <number>
-  :
+  PYTHONIOENCODING=UTF-8 python3 q2.py
 }
 
 q3() {
@@ -185,7 +186,7 @@ q3() {
   #
   # Standard output format:
   # <number>
-  :
+  PYTHONIOENCODING=UTF-8 python3 q3.py
 }
 
 ################################################################################
