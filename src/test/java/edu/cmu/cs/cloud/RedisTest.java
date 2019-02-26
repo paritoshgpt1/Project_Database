@@ -11,6 +11,10 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
+import static org.hamcrest.*;
+
 /**
  * Usage:
  * mvn test
@@ -103,17 +107,36 @@ class RedisTest {
 
     @Test
     void hset() {
-        throw new RuntimeException("add test cases on your own");
+        Redis redisClient = new Redis();
+
+        assertEquals(1, redisClient.hset("myhash", "mykey1", "myval1"));
+        assertEquals(1, redisClient.hset("myhash", "mykey2", "myval2"));
+        assertEquals(0, redisClient.hset("myhash", "mykey1", "newval1"));
+        assertNotEquals(1, redisClient.hset("myhash", "mykey2", "newval2"));
+        assertNotEquals(1, redisClient.hset("myhash", "mykey3", "myval3"));
     }
 
     @Test
     void hget() {
-        throw new RuntimeException("add test cases on your own");
+        Redis redisClient = new Redis();
+
+        assertNull(redisClient.hget("myhash", "mykey"));
+
+        redisClient.hset("myhash", "mykey1", "myval1");
+        assertNotNull(redisClient.hget("myhash", "mykey1"));
+        assertEquals("myval1", redisClient.hget("myhash", "mykey1"));
+
+        redisClient.hset("myhash", "mykey1", "newval1");
+        assertNotEquals("myval1", redisClient.hget("myhash", "mykey1"));
+        assertEquals("newval1", redisClient.hget("myhash", "mykey1"));
     }
 
     @Test
     void hgetall() {
-        throw new RuntimeException("add test cases on your own");
+        Redis redisClient = new Redis();
+
+        List expectedList = new LinkedList();
+        assertThat(expectedList, IsArrayContainingInOrder(redisClient.hgetall("myhash")));
     }
 
     @Test
