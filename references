@@ -26,6 +26,12 @@
       "description":"<additional information you may find necessary to provide>"
     },
     {
+      "title":"Hibernate Configuration",
+      "url":"https://www.tutorialspoint.com/hibernate/hibernate_configuration.htm",
+      "code":"To update the hibernate dialect from SOLite to Mysql",
+      "description":"<additional information you may find necessary to provide>"
+    },
+    {
       "title":"<title of the page>",
       "url":"<url>",
       "code":"<explain in which part of your code did you use the snippet or idea>",
