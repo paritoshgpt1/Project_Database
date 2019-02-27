@@ -162,6 +162,8 @@ public class HBaseTasks {
      */
     private static void q12() throws IOException{
         Scan scan = new Scan();
+        scan.addColumn(bColFamily, Bytes.toBytes("name"));
+
         byte[] neighbourhood = Bytes.toBytes("neighbourhood");
         scan.addColumn(bColFamily, neighbourhood);
 
@@ -175,9 +177,20 @@ public class HBaseTasks {
         Filter filter2 = new SingleColumnValueFilter(bColFamily, categories,
                 CompareFilter.CompareOp.EQUAL, comp2);
 
+        byte[] attributes = Bytes.toBytes("attributes");
+        scan.addColumn(bColFamily, attributes);
+        SubstringComparator comp3 = new SubstringComparator("WiFi");
+        Filter filter3 = new SingleColumnValueFilter(bColFamily, attributes,
+                CompareFilter.CompareOp.EQUAL, comp3);
+        SubstringComparator comp4 = new SubstringComparator("BikeParking");
+        Filter filter4 = new SingleColumnValueFilter(bColFamily, attributes,
+                CompareFilter.CompareOp.EQUAL, comp4);
+
         FilterList filterList = new FilterList(FilterList.Operator.MUST_PASS_ALL);
         filterList.addFilter(filter1);
         filterList.addFilter(filter2);
+        filterList.addFilter(filter3);
+        filterList.addFilter(filter4);
         scan.setFilter(filterList);
         ResultScanner rs = bizTable.getScanner(scan);
         for (Result r : rs) {
