@@ -161,27 +161,36 @@ public class HBaseTasks {
         byte[] name = Bytes.toBytes("name");
         scan.addColumn(bColFamily, name);
 
-        byte[] neighborhood = Bytes.toBytes("neighborhood");
-        scan.addColumn(bColFamily, neighborhood);
+//        byte[] neighborhood = Bytes.toBytes("neighborhood");
+//        scan.addColumn(bColFamily, neighborhood);
+//        SubstringComparator comp1 = new SubstringComparator("Shadyside");
+//        Filter filter1 = new SingleColumnValueFilter(bColFamily, neighborhood,
+//                CompareFilter.CompareOp.EQUAL, comp1);
 
-        SubstringComparator comp1 = new SubstringComparator("Shadyside");
-        Filter filter1 = new SingleColumnValueFilter(bColFamily, neighborhood,
-                CompareFilter.CompareOp.EQUAL, comp1);
+//        byte[] categories = Bytes.toBytes("categories");
+//        scan.addColumn(bColFamily, categories);
+//        SubstringComparator comp2 = new SubstringComparator("Asian Fusion");
+//        Filter filter2 = new SingleColumnValueFilter(bColFamily, categories,
+//                CompareFilter.CompareOp.EQUAL, comp2);
 
-        byte[] categories = Bytes.toBytes("categories");
-        scan.addColumn(bColFamily, categories);
-        SubstringComparator comp2 = new SubstringComparator("Asian Fusion");
-        Filter filter2 = new SingleColumnValueFilter(bColFamily, categories,
-                CompareFilter.CompareOp.EQUAL, comp2);
+//        byte[] attributes = Bytes.toBytes("attributes");
+//        scan.addColumn(bColFamily, attributes);
+//        RegexStringComparator comp3 = new RegexStringComparator("'WiFi': 'free'");
+//        Filter filter3 = new SingleColumnValueFilter(bColFamily, attributes,
+//                CompareFilter.CompareOp.EQUAL, comp3);
 
-        byte[] attributes = Bytes.toBytes("attributes");
-        scan.addColumn(bColFamily, attributes);
-        RegexStringComparator comp3 = new RegexStringComparator("'WiFi': 'free'");
-        Filter filter3 = new SingleColumnValueFilter(bColFamily, attributes,
-                CompareFilter.CompareOp.EQUAL, comp3);
-        RegexStringComparator comp4 = new RegexStringComparator("'BikeParking': True");
-        Filter filter4 = new SingleColumnValueFilter(bColFamily, attributes,
-                CompareFilter.CompareOp.EQUAL, comp4);
+//        RegexStringComparator comp4 = new RegexStringComparator("'BikeParking': True");
+//        Filter filter4 = new SingleColumnValueFilter(bColFamily, attributes,
+//                CompareFilter.CompareOp.EQUAL, comp4);
+
+        Filter filter1 = createFilter("neighborhood", scan, "SubstringComparator",
+                "Shadyside", true);
+        Filter filter2 = createFilter("categories", scan, "SubstringComparator",
+                "Asian Fusion", true);
+        Filter filter3 = createFilter("attributes", scan, "RegexStringComparator",
+                "'WiFi': 'free'", true);
+        Filter filter4 = createFilter("attributes", scan, "RegexStringComparator",
+                "'BikeParking': True", true);
 
         FilterList filterList = new FilterList(FilterList.Operator.MUST_PASS_ALL);
         filterList.addFilter(filter1);
@@ -196,7 +205,27 @@ public class HBaseTasks {
         rs.close();
     }
 
-    private static void printValue(Result r, String colname) {
+    private static Filter createFilter(String colName, Scan scan, String comparatorType, String searchString,
+                                       boolean checkEqual) {
+        byte[] column = Bytes.toBytes(colName);
+        scan.addColumn(bColFamily, column);
+        CompareFilter.CompareOp equality;
+        if (checkEqual) {
+            equality = CompareFilter.CompareOp.EQUAL;
+        } else {
+            equality = CompareFilter.CompareOp.NOT_EQUAL;
+        }
+        if (comparatorType.equals("SubstringComparator")) {
+            SubstringComparator comp = new SubstringComparator(searchString);
+            return new SingleColumnValueFilter(bColFamily, column, equality, comp);
+        } else if (comparatorType.equals("RegexStringComparator")) {
+            RegexStringComparator comp = new RegexStringComparator(searchString);
+            return new SingleColumnValueFilter(bColFamily, column, equality, comp);
+        }
+        return null;
+    }
+
+    private static void printValue(Result r, String colName) {
         byte[] col = Bytes.toBytes(colname);
         byte[] value = r.getValue(bColFamily, col);
         String readableVal = Bytes.toString(value);
