@@ -1,7 +1,6 @@
 package edu.cmu.cs.cloud;
 
 import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.hbase.Cell;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.client.Connection;
@@ -161,36 +160,14 @@ public class HBaseTasks {
         byte[] name = Bytes.toBytes("name");
         scan.addColumn(bColFamily, name);
 
-//        byte[] neighborhood = Bytes.toBytes("neighborhood");
-//        scan.addColumn(bColFamily, neighborhood);
-//        SubstringComparator comp1 = new SubstringComparator("Shadyside");
-//        Filter filter1 = new SingleColumnValueFilter(bColFamily, neighborhood,
-//                CompareFilter.CompareOp.EQUAL, comp1);
-
-//        byte[] categories = Bytes.toBytes("categories");
-//        scan.addColumn(bColFamily, categories);
-//        SubstringComparator comp2 = new SubstringComparator("Asian Fusion");
-//        Filter filter2 = new SingleColumnValueFilter(bColFamily, categories,
-//                CompareFilter.CompareOp.EQUAL, comp2);
-
-//        byte[] attributes = Bytes.toBytes("attributes");
-//        scan.addColumn(bColFamily, attributes);
-//        RegexStringComparator comp3 = new RegexStringComparator("'WiFi': 'free'");
-//        Filter filter3 = new SingleColumnValueFilter(bColFamily, attributes,
-//                CompareFilter.CompareOp.EQUAL, comp3);
-
-//        RegexStringComparator comp4 = new RegexStringComparator("'BikeParking': True");
-//        Filter filter4 = new SingleColumnValueFilter(bColFamily, attributes,
-//                CompareFilter.CompareOp.EQUAL, comp4);
-
         Filter filter1 = createFilter("neighborhood", scan, "SubstringComparator",
-                "Shadyside", true);
+                "Shadyside", "equal");
         Filter filter2 = createFilter("categories", scan, "SubstringComparator",
-                "Asian Fusion", true);
+                "Asian Fusion", "equal");
         Filter filter3 = createFilter("attributes", scan, "RegexStringComparator",
-                "'WiFi': 'free'", true);
+                "'WiFi': 'free'", "equal");
         Filter filter4 = createFilter("attributes", scan, "RegexStringComparator",
-                "'BikeParking': True", true);
+                "'BikeParking': True", "equal");
 
         FilterList filterList = new FilterList(FilterList.Operator.MUST_PASS_ALL);
         filterList.addFilter(filter1);
@@ -206,21 +183,34 @@ public class HBaseTasks {
     }
 
     private static Filter createFilter(String colName, Scan scan, String comparatorType, String searchString,
-                                       boolean checkEqual) {
+                                       String comparisonType) {
         byte[] column = Bytes.toBytes(colName);
         scan.addColumn(bColFamily, column);
-        CompareFilter.CompareOp equality;
-        if (checkEqual) {
-            equality = CompareFilter.CompareOp.EQUAL;
-        } else {
-            equality = CompareFilter.CompareOp.NOT_EQUAL;
+        CompareFilter.CompareOp compareFilter = null;
+        switch (comparisonType) {
+            case "equal":
+                compareFilter = CompareFilter.CompareOp.EQUAL;
+                break;
+            case "not_equal":
+                compareFilter = CompareFilter.CompareOp.NOT_EQUAL;
+                break;
+            case "greater":
+                compareFilter = CompareFilter.CompareOp.GREATER_OR_EQUAL;
+                break;
         }
-        if (comparatorType.equals("SubstringComparator")) {
-            SubstringComparator comp = new SubstringComparator(searchString);
-            return new SingleColumnValueFilter(bColFamily, column, equality, comp);
-        } else if (comparatorType.equals("RegexStringComparator")) {
-            RegexStringComparator comp = new RegexStringComparator(searchString);
-            return new SingleColumnValueFilter(bColFamily, column, equality, comp);
+        switch (comparatorType) {
+            case "SubstringComparator": {
+                SubstringComparator comp = new SubstringComparator(searchString);
+                return new SingleColumnValueFilter(bColFamily, column, compareFilter, comp);
+            }
+            case "RegexStringComparator": {
+                RegexStringComparator comp = new RegexStringComparator(searchString);
+                return new SingleColumnValueFilter(bColFamily, column, compareFilter, comp);
+            }
+            case "BinaryComparator": {
+                BinaryComparator comp = new BinaryComparator(Bytes.toBytes(Integer.parseInt(searchString)));
+                return new SingleColumnValueFilter(bColFamily, column, compareFilter, comp);
+            }
         }
         return null;
     }
@@ -258,7 +248,31 @@ public class HBaseTasks {
      * You are allowed to make changes such as modifying method name, parameter
      * list and/or return type.
      */
-    private static void q13() {
+    private static void q13() throws IOException{
+        Scan scan = new Scan();
+
+        Filter filter1 = createFilter("name", scan, "SubstringComparator",
+                "India", "equal");
+        Filter filter2 = createFilter("neighborhood", scan, "RegexStringComparator",
+                "Downtown|Oakland", "equal");
+        Filter filter3 = createFilter("city", scan, "SubstringComparator",
+                "Pittsburgh", "equal");
+        Filter filter4 = createFilter("hours", scan, "BinaryComparator",
+                "Pittsburgh", "greater");
+        Filter filter5 = createFilter("attributes", scan, "RegexStringComparator",
+                "'RestaurantsDelivery': True", "equal");
+        FilterList filterList = new FilterList(FilterList.Operator.MUST_PASS_ALL);
+        filterList.addFilter(filter1);
+        filterList.addFilter(filter2);
+        filterList.addFilter(filter3);
+        filterList.addFilter(filter4);
+        filterList.addFilter(filter5);
+        scan.setFilter(filterList);
+        ResultScanner rs = bizTable.getScanner(scan);
+        for (Result r : rs) {
+            printValue(r, "name");
+        }
+        rs.close();
 
     }
 
