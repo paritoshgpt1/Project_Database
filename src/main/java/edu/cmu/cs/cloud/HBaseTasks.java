@@ -195,15 +195,19 @@ public class HBaseTasks {
         scan.setFilter(filterList);
         ResultScanner rs = bizTable.getScanner(scan);
         for (Result r : rs) {
-            byte[] value = r.getValue(bColFamily, name);
-            String businessName = Bytes.toString(value);
-            System.out.println(businessName);
-            System.out.println("row key "+new String(r.getRow()));
-            for(Cell c : r.rawCells()){
-                System.out.println(c);
-            }
+            printValue(r, "name");
+            printValue(r, "business");
+            printValue(r, "categories");
+            printValue(r, "attributes");
         }
         rs.close();
+    }
+
+    private static void printValue(Result r, String colname) {
+        byte[] col = Bytes.toBytes(colname);
+        byte[] value = r.getValue(bColFamily, col);
+        String readableVal = Bytes.toString(value);
+        System.out.println(readableVal);
     }
 
     /**
