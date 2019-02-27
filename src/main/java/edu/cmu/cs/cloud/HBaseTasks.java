@@ -196,6 +196,9 @@ public class HBaseTasks {
         ResultScanner rs = bizTable.getScanner(scan);
         for (Result r : rs) {
             printValue(r, "name");
+            printValue(r, "neighborhood");
+            printValue(r, "categories");
+            printValue(r, "attributes");
         }
         rs.close();
     }
