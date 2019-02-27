@@ -170,6 +170,7 @@ public class HBaseTasks {
                 CompareFilter.CompareOp.EQUAL, comp1);
 
         byte[] categories = Bytes.toBytes("categories");
+        scan.addColumn(bColFamily, categories);
         SubstringComparator comp2 = new SubstringComparator("Asian Fusion");
         Filter filter2 = new SingleColumnValueFilter(bColFamily, categories,
                 CompareFilter.CompareOp.EQUAL, comp2);
