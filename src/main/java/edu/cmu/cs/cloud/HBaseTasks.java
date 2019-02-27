@@ -165,11 +165,11 @@ public class HBaseTasks {
         byte[] name = Bytes.toBytes("name");
         scan.addColumn(bColFamily, name);
 
-        byte[] neighbourhood = Bytes.toBytes("neighbourhood");
-        scan.addColumn(bColFamily, neighbourhood);
+        byte[] neighborhood = Bytes.toBytes("neighborhood");
+        scan.addColumn(bColFamily, neighborhood);
 
         SubstringComparator comp1 = new SubstringComparator("Shadyside");
-        Filter filter1 = new SingleColumnValueFilter(bColFamily, neighbourhood,
+        Filter filter1 = new SingleColumnValueFilter(bColFamily, neighborhood,
                 CompareFilter.CompareOp.EQUAL, comp1);
 
         byte[] categories = Bytes.toBytes("categories");
@@ -196,9 +196,6 @@ public class HBaseTasks {
         ResultScanner rs = bizTable.getScanner(scan);
         for (Result r : rs) {
             printValue(r, "name");
-            printValue(r, "neighbourhood");
-            printValue(r, "categories");
-            printValue(r, "attributes");
         }
         rs.close();
     }
