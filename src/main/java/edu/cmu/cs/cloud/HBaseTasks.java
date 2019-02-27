@@ -10,11 +10,7 @@ import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.ResultScanner;
 import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.client.Table;
-import org.apache.hadoop.hbase.filter.CompareFilter;
-import org.apache.hadoop.hbase.filter.Filter;
-import org.apache.hadoop.hbase.filter.SingleColumnValueFilter;
-import org.apache.hadoop.hbase.filter.SubstringComparator;
-import org.apache.hadoop.hbase.filter.FilterList;
+import org.apache.hadoop.hbase.filter.*;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -180,10 +176,10 @@ public class HBaseTasks {
 
         byte[] attributes = Bytes.toBytes("attributes");
         scan.addColumn(bColFamily, attributes);
-        SubstringComparator comp3 = new SubstringComparator("WiFi");
+        RegexStringComparator comp3 = new RegexStringComparator("'WiFi': 'free'");
         Filter filter3 = new SingleColumnValueFilter(bColFamily, attributes,
                 CompareFilter.CompareOp.EQUAL, comp3);
-        SubstringComparator comp4 = new SubstringComparator("BikeParking");
+        RegexStringComparator comp4 = new RegexStringComparator("'BikeParking': True");
         Filter filter4 = new SingleColumnValueFilter(bColFamily, attributes,
                 CompareFilter.CompareOp.EQUAL, comp4);
 
@@ -196,9 +192,6 @@ public class HBaseTasks {
         ResultScanner rs = bizTable.getScanner(scan);
         for (Result r : rs) {
             printValue(r, "name");
-            printValue(r, "neighborhood");
-            printValue(r, "categories");
-            printValue(r, "attributes");
         }
         rs.close();
     }
