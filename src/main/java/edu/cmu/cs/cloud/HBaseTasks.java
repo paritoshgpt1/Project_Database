@@ -3,12 +3,7 @@ package edu.cmu.cs.cloud;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.TableName;
-import org.apache.hadoop.hbase.client.Connection;
-import org.apache.hadoop.hbase.client.ConnectionFactory;
-import org.apache.hadoop.hbase.client.Result;
-import org.apache.hadoop.hbase.client.ResultScanner;
-import org.apache.hadoop.hbase.client.Scan;
-import org.apache.hadoop.hbase.client.Table;
+import org.apache.hadoop.hbase.client.*;
 import org.apache.hadoop.hbase.filter.*;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.apache.log4j.Level;
@@ -271,10 +266,6 @@ public class HBaseTasks {
         ResultScanner rs = bizTable.getScanner(scan);
         for (Result r : rs) {
             printValue(r, "name");
-//            printValue(r, "neighborhood");
-//            printValue(r, "city");
-//            printValue(r, "hours");
-//            printValue(r, "attributes");
         }
         rs.close();
 
@@ -293,8 +284,10 @@ public class HBaseTasks {
      * You are allowed to make changes such as modifying method name, parameter
      * list and/or return type.
      */
-    private static void q14() {
-
+    private static void q14() throws IOException{
+        Get g = new Get(Bytes.toBytes("I1vE5o98Wy5pCULJoEclqw"));
+        Result result = bizTable.get(g);
+        printValue(result, "name");
     }
 
     /**
