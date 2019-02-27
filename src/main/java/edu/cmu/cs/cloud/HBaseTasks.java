@@ -3,22 +3,10 @@ package edu.cmu.cs.cloud;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.TableName;
-import org.apache.hadoop.hbase.client.Connection;
-import org.apache.hadoop.hbase.client.ConnectionFactory;
-import org.apache.hadoop.hbase.client.Get;
-import org.apache.hadoop.hbase.client.Result;
-import org.apache.hadoop.hbase.client.ResultScanner;
-import org.apache.hadoop.hbase.client.Scan;
-import org.apache.hadoop.hbase.client.Table;
+import org.apache.hadoop.hbase.client.*;
 import org.apache.hadoop.hbase.client.coprocessor.AggregationClient;
 import org.apache.hadoop.hbase.client.coprocessor.LongColumnInterpreter;
-import org.apache.hadoop.hbase.filter.BinaryComparator;
-import org.apache.hadoop.hbase.filter.CompareFilter;
-import org.apache.hadoop.hbase.filter.Filter;
-import org.apache.hadoop.hbase.filter.FilterList;
-import org.apache.hadoop.hbase.filter.RegexStringComparator;
-import org.apache.hadoop.hbase.filter.SingleColumnValueFilter;
-import org.apache.hadoop.hbase.filter.SubstringComparator;
+import org.apache.hadoop.hbase.filter.*;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -73,7 +61,7 @@ public class HBaseTasks {
         conf.set("hbase.zookeeper.quorum", zkPrivateIPs);
         conf.set("hbase.zookeeper.property.clientport", "2181");
         conf.set("hbase.cluster.distributed", "true");
-        conf.set("zookeeper.znode.parent","/hbase-unsecure");
+        conf.set("zookeeper.znode.parent", "/hbase-unsecure");
         conn = ConnectionFactory.createConnection(conf);
         bizTable = conn.getTable(tableName);
         aclient = new AggregationClient(conf);
@@ -82,8 +70,7 @@ public class HBaseTasks {
     /**
      * Clean up resources.
      *
-     * @throws IOException
-     * Throw IOEXception
+     * @throws IOException Throw IOEXception
      */
     private static void cleanup() throws IOException {
         if (bizTable != null) {
@@ -97,7 +84,7 @@ public class HBaseTasks {
     /**
      * You should complete the missing parts in the following method.
      * Feel free to add helper functions if necessary.
-     *
+     * <p>
      * For all questions, output your answer in ONE single line,
      * i.e. use System.out.print().
      *
@@ -153,24 +140,24 @@ public class HBaseTasks {
 
     /**
      * Question 12.
-     *
+     * <p>
      * Scenario:
      * What's that new "Asian Fusion" place in "Shadyside" with free wifi and
      * bike parking?
-     *
+     * <p>
      * Print each name of the business on a single line.
      * If there are multiple answers, print all of them.
-     *
+     * <p>
      * Note:
      * 1. The "neighborhood" column should contain "Shadyside" as a substring.
      * 2. The "categories" column should contain "Asian Fusion" as a substring.
      * 3. The "WiFi" and "BikeParking" information can be found in the
      * "attributes" column. Please be careful about the format of the data.
-     *
+     * <p>
      * You are allowed to make changes such as modifying method name, parameter
      * list and/or return type.
      */
-    private static void q12() throws IOException{
+    private static void q12() throws IOException {
         Scan scan = new Scan();
         byte[] name = Bytes.toBytes("name");
         scan.addColumn(bColFamily, name);
@@ -239,15 +226,15 @@ public class HBaseTasks {
 
     /**
      * Question 13.
-     *
+     * <p>
      * Scenario:
      * I'm looking for some Indian food to eat in Downtown or Oakland of Pittsburgh
      * that start serving on Fridays at 5pm, but still deliver in case I'm too lazy
      * to drive there.
-     *
+     * <p>
      * Print each name of the business on a single line.
      * If there are multiple answers, print all of them.
-     *
+     * <p>
      * Note:
      * 1. The "name" column should contain "India" as a substring.
      * 2. The "neighborhood" column should contain "Downtown" or "Oakland"
@@ -256,14 +243,14 @@ public class HBaseTasks {
      * 4. The "hours" column shows the hours when businesses start serving.
      * 5. The "RestaurantsDelivery" information can be found in the
      * "attributes" column.
-     *
+     * <p>
      * Hint:
      * You may consider using other comparators in the filter.
-     *
+     * <p>
      * You are allowed to make changes such as modifying method name, parameter
      * list and/or return type.
      */
-    private static void q13() throws IOException{
+    private static void q13() throws IOException {
         Scan scan = new Scan();
 
         Filter filter1 = createFilter("name", scan, "SubstringComparator",
@@ -293,18 +280,18 @@ public class HBaseTasks {
 
     /**
      * Question 14.
-     *
+     * <p>
      * Write HBase query to do the equivalent of the SQL query:
      * SELECT name FROM businesses where business_id = "I1vE5o98Wy5pCULJoEclqw"
-     *
+     * <p>
      * Hint:
      * You may consider using other HBase operations which are used to search
      * and retrieve one single row by the rowkey.
-     *
+     * <p>
      * You are allowed to make changes such as modifying method name, parameter
      * list and/or return type.
      */
-    private static void q14() throws IOException{
+    private static void q14() throws IOException {
         Get g = new Get(Bytes.toBytes("I1vE5o98Wy5pCULJoEclqw"));
         Result result = bizTable.get(g);
         printValue(result, "name");
@@ -312,30 +299,30 @@ public class HBaseTasks {
 
     /**
      * Question 15.
-     *
+     * <p>
      * Write HBase query to do the equivalent of the SQL query:
      * SELECT COUNT(*) FROM businesses
-     *
+     * <p>
      * Print the number on a single line.
-     *
+     * <p>
      * Note:
      * 1. HBase uses Coprocessor to perform data aggregation across multiple
      * region servers, you need to enable Coprocessors inside HBase shell
      * before writing Java code.
-     *
-     *   Step 1. disable the table
-     *   hbase> disable 'mytable'
-     *
-     *   Step 2. add the coprocessor
-     *   hbase> alter 'mytable', METHOD =>
-     *     'table_att','coprocessor'=>
-     *     '|org.apache.hadoop.hbase.coprocessor.AggregateImplementation||'
-     *
-     *   Step 3. re-enable the table
-     *   hbase> enable 'mytable'
-     *
+     * <p>
+     * Step 1. disable the table
+     * hbase> disable 'mytable'
+     * <p>
+     * Step 2. add the coprocessor
+     * hbase> alter 'mytable', METHOD =>
+     * 'table_att','coprocessor'=>
+     * '|org.apache.hadoop.hbase.coprocessor.AggregateImplementation||'
+     * <p>
+     * Step 3. re-enable the table
+     * hbase> enable 'mytable'
+     * <p>
      * 2. You may want to look at the AggregationClient Class in HBase APIs.
-     *
+     * <p>
      * You are allowed to make changes such as modifying method name, parameter
      * list and/or return type.
      */
