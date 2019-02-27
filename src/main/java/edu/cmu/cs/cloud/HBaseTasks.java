@@ -162,7 +162,8 @@ public class HBaseTasks {
      */
     private static void q12() throws IOException{
         Scan scan = new Scan();
-        scan.addColumn(bColFamily, Bytes.toBytes("name"));
+        byte[] name = Bytes.toBytes("name");
+        scan.addColumn(bColFamily, name);
 
         byte[] neighbourhood = Bytes.toBytes("neighbourhood");
         scan.addColumn(bColFamily, neighbourhood);
@@ -194,11 +195,9 @@ public class HBaseTasks {
         scan.setFilter(filterList);
         ResultScanner rs = bizTable.getScanner(scan);
         for (Result r : rs) {
-            System.out.println("rowkey:" + new String(r.getRow()));
-            for (KeyValue keyValue : r.raw()) {
-                System.out.println("getFamilyArray: " + new String(keyValue.getFamilyArray())
-                        + "getValueArray: " + new String(keyValue.getValueArray()));
-            }
+            byte[] value = r.getValue(bColFamily, name);
+            String businessName = Bytes.toString(value);
+            System.out.println(businessName);
         }
         rs.close();
     }
