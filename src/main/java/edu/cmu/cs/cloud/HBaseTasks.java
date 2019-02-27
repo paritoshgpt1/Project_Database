@@ -20,6 +20,7 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 public class HBaseTasks {
 
@@ -198,6 +199,7 @@ public class HBaseTasks {
             byte[] value = r.getValue(bColFamily, name);
             String businessName = Bytes.toString(value);
             System.out.println(businessName);
+            System.out.println(Arrays.toString(r.getRow()));
         }
         rs.close();
     }
