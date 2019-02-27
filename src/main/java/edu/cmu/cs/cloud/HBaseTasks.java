@@ -22,9 +22,9 @@ import java.io.IOException;
 public class HBaseTasks {
 
     /**
-     * TODO: set the private IP address(es) of HBase zookeeper nodes.
+     * The private IP address(es) of HBase zookeeper nodes.
      */
-    private static String zkPrivateIPs = "<Comma-separated HBase Zookeeper private IPs>";
+    private static String zkPrivateIPs = "10.0.1.14,10.0.1.18,10.0.1.13";
     /**
      * The name of your HBase table.
      */
