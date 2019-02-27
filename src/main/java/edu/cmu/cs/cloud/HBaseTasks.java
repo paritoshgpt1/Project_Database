@@ -2,6 +2,7 @@ package edu.cmu.cs.cloud;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
+import org.apache.hadoop.hbase.KeyValue;
 import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.client.Connection;
 import org.apache.hadoop.hbase.client.ConnectionFactory;
@@ -172,15 +173,18 @@ public class HBaseTasks {
         SubstringComparator comp2 = new SubstringComparator("Asian Fusion");
         Filter filter2 = new SingleColumnValueFilter(bColFamily, categories,
                 CompareFilter.CompareOp.EQUAL, comp2);
-        
+
         FilterList filterList = new FilterList(FilterList.Operator.MUST_PASS_ALL);
         filterList.addFilter(filter1);
         filterList.addFilter(filter2);
         scan.setFilter(filterList);
         ResultScanner rs = bizTable.getScanner(scan);
-        Result result;
-        while ((result = rs.next()) != null) {
-            System.out.println(result);
+        for (Result r : rs) {
+            System.out.println("rowkey:" + new String(r.getRow()));
+            for (KeyValue keyValue : r.raw()) {
+                System.out.println("getFamilyArray: " + new String(keyValue.getFamilyArray())
+                        + "getValueArray: " + new String(keyValue.getValueArray()));
+            }
         }
         rs.close();
     }
