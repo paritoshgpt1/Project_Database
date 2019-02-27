@@ -258,7 +258,7 @@ public class HBaseTasks {
         Filter filter3 = createFilter("city", scan, "SubstringComparator",
                 "Pittsburgh", "equal");
         Filter filter4 = createFilter("hours", scan, "BinaryComparator",
-                "Pittsburgh", "greater");
+                "5", "greater");
         Filter filter5 = createFilter("attributes", scan, "RegexStringComparator",
                 "'RestaurantsDelivery': True", "equal");
         FilterList filterList = new FilterList(FilterList.Operator.MUST_PASS_ALL);
@@ -271,6 +271,10 @@ public class HBaseTasks {
         ResultScanner rs = bizTable.getScanner(scan);
         for (Result r : rs) {
             printValue(r, "name");
+            printValue(r, "neighborhood");
+            printValue(r, "city");
+            printValue(r, "hours");
+            printValue(r, "attributes");
         }
         rs.close();
 
