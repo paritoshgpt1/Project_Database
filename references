@@ -48,6 +48,18 @@
       "url":"https://www.programcreek.com/java-api-examples/index.php?api=org.apache.hadoop.hbase.filter.SingleColumnValueFilter",
       "code":"To write HBase Queries",
       "description":"<additional information you may find necessary to provide>"
+    },
+    {
+      "title":"HBase search in json fields",
+      "url":"https://stackoverflow.com/questions/25909480/hbase-search-in-json-fields",
+      "code":"To write HBase Queries",
+      "description":"<additional information you may find necessary to provide>"
+    },
+    {
+      "title":"Java Code Examples for org.apache.hadoop.hbase.client.coprocessor.AggregationClient",
+      "url":"https://www.programcreek.com/java-api-examples/index.php?api=org.apache.hadoop.hbase.client.coprocessor.AggregationClient",
+      "code":"To write HBase Queries - Q15",
+      "description":"<additional information you may find necessary to provide>"
     }
   ]
 }

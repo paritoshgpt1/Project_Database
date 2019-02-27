@@ -3,8 +3,22 @@ package edu.cmu.cs.cloud;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.TableName;
-import org.apache.hadoop.hbase.client.*;
-import org.apache.hadoop.hbase.filter.*;
+import org.apache.hadoop.hbase.client.Connection;
+import org.apache.hadoop.hbase.client.ConnectionFactory;
+import org.apache.hadoop.hbase.client.Get;
+import org.apache.hadoop.hbase.client.Result;
+import org.apache.hadoop.hbase.client.ResultScanner;
+import org.apache.hadoop.hbase.client.Scan;
+import org.apache.hadoop.hbase.client.Table;
+import org.apache.hadoop.hbase.client.coprocessor.AggregationClient;
+import org.apache.hadoop.hbase.client.coprocessor.LongColumnInterpreter;
+import org.apache.hadoop.hbase.filter.BinaryComparator;
+import org.apache.hadoop.hbase.filter.CompareFilter;
+import org.apache.hadoop.hbase.filter.Filter;
+import org.apache.hadoop.hbase.filter.FilterList;
+import org.apache.hadoop.hbase.filter.RegexStringComparator;
+import org.apache.hadoop.hbase.filter.SingleColumnValueFilter;
+import org.apache.hadoop.hbase.filter.SubstringComparator;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -39,6 +53,11 @@ public class HBaseTasks {
     private static final Logger LOGGER = Logger.getRootLogger();
 
     /**
+     * Aggregation Client to perform aggregation operations.
+     */
+    private static AggregationClient aclient;
+
+    /**
      * Initialize HBase connection.
      *
      * @throws IOException if a network exception occurs.
@@ -57,6 +76,7 @@ public class HBaseTasks {
         conf.set("zookeeper.znode.parent","/hbase-unsecure");
         conn = ConnectionFactory.createConnection(conf);
         bizTable = conn.getTable(tableName);
+        aclient = new AggregationClient(conf);
     }
 
     /**
@@ -320,7 +340,14 @@ public class HBaseTasks {
      * list and/or return type.
      */
     private static void q15() {
-
+        Scan scan = new Scan();
+        long rowCount = 0;
+        try {
+            rowCount = aclient.rowCount(bizTable, new LongColumnInterpreter(), scan);
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
+        }
+        System.out.println(rowCount);
     }
 
 }
