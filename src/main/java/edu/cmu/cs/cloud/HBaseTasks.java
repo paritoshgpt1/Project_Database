@@ -3,10 +3,22 @@ package edu.cmu.cs.cloud;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.TableName;
-import org.apache.hadoop.hbase.client.*;
+import org.apache.hadoop.hbase.client.Connection;
+import org.apache.hadoop.hbase.client.ConnectionFactory;
+import org.apache.hadoop.hbase.client.Get;
+import org.apache.hadoop.hbase.client.Result;
+import org.apache.hadoop.hbase.client.ResultScanner;
+import org.apache.hadoop.hbase.client.Scan;
+import org.apache.hadoop.hbase.client.Table;
 import org.apache.hadoop.hbase.client.coprocessor.AggregationClient;
 import org.apache.hadoop.hbase.client.coprocessor.LongColumnInterpreter;
-import org.apache.hadoop.hbase.filter.*;
+import org.apache.hadoop.hbase.filter.BinaryComparator;
+import org.apache.hadoop.hbase.filter.CompareFilter;
+import org.apache.hadoop.hbase.filter.Filter;
+import org.apache.hadoop.hbase.filter.FilterList;
+import org.apache.hadoop.hbase.filter.RegexStringComparator;
+import org.apache.hadoop.hbase.filter.SingleColumnValueFilter;
+import org.apache.hadoop.hbase.filter.SubstringComparator;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -199,6 +211,8 @@ public class HBaseTasks {
             case "greater":
                 compareFilter = CompareFilter.CompareOp.GREATER_OR_EQUAL;
                 break;
+            default:
+                break;
         }
         switch (comparatorType) {
             case "SubstringComparator": {
@@ -213,6 +227,8 @@ public class HBaseTasks {
                 BinaryComparator comp = new BinaryComparator(Bytes.toBytes(Integer.parseInt(searchString)));
                 return new SingleColumnValueFilter(bColFamily, column, compareFilter, comp);
             }
+            default:
+                break;
         }
         return null;
     }
