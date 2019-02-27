@@ -226,7 +226,7 @@ public class HBaseTasks {
     }
 
     private static void printValue(Result r, String colName) {
-        byte[] col = Bytes.toBytes(colname);
+        byte[] col = Bytes.toBytes(colName);
         byte[] value = r.getValue(bColFamily, col);
         String readableVal = Bytes.toString(value);
         System.out.println(readableVal);
