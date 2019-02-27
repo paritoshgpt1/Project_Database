@@ -1,8 +1,8 @@
 package edu.cmu.cs.cloud;
 
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.hbase.Cell;
 import org.apache.hadoop.hbase.HBaseConfiguration;
-import org.apache.hadoop.hbase.KeyValue;
 import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.client.Connection;
 import org.apache.hadoop.hbase.client.ConnectionFactory;
@@ -20,7 +20,6 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
-import java.util.Arrays;
 
 public class HBaseTasks {
 
@@ -199,7 +198,10 @@ public class HBaseTasks {
             byte[] value = r.getValue(bColFamily, name);
             String businessName = Bytes.toString(value);
             System.out.println(businessName);
-            System.out.println(Arrays.toString(r.getRow()));
+            System.out.println("row key "+new String(r.getRow()));
+            for(Cell c : r.rawCells()){
+                System.out.println(c);
+            }
         }
         rs.close();
     }
