@@ -44,9 +44,9 @@
       "description":"<additional information you may find necessary to provide>"
     },
     {
-      "title":"<title of the page>",
-      "url":"<url>",
-      "code":"<explain in which part of your code did you use the snippet or idea>",
+      "title":" Java Code Examples org.apache.hadoop.hbase.filter.SingleColumnValueFilter",
+      "url":"https://www.programcreek.com/java-api-examples/index.php?api=org.apache.hadoop.hbase.filter.SingleColumnValueFilter",
+      "code":"To write HBase Queries",
       "description":"<additional information you may find necessary to provide>"
     }
   ]

@@ -13,6 +13,7 @@ import org.apache.hadoop.hbase.filter.CompareFilter;
 import org.apache.hadoop.hbase.filter.Filter;
 import org.apache.hadoop.hbase.filter.SingleColumnValueFilter;
 import org.apache.hadoop.hbase.filter.SubstringComparator;
+import org.apache.hadoop.hbase.filter.FilterList;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -158,8 +159,30 @@ public class HBaseTasks {
      * You are allowed to make changes such as modifying method name, parameter
      * list and/or return type.
      */
-    private static void q12() {
+    private static void q12() throws IOException{
+        Scan scan = new Scan();
+        byte[] neighbourhood = Bytes.toBytes("neighbourhood");
+        scan.addColumn(bColFamily, neighbourhood);
 
+        SubstringComparator comp1 = new SubstringComparator("Shadyside");
+        Filter filter1 = new SingleColumnValueFilter(bColFamily, neighbourhood,
+                CompareFilter.CompareOp.EQUAL, comp1);
+
+        byte[] categories = Bytes.toBytes("categories");
+        SubstringComparator comp2 = new SubstringComparator("Asian Fusion");
+        Filter filter2 = new SingleColumnValueFilter(bColFamily, categories,
+                CompareFilter.CompareOp.EQUAL, comp2);
+        
+        FilterList filterList = new FilterList(FilterList.Operator.MUST_PASS_ALL);
+        filterList.addFilter(filter1);
+        filterList.addFilter(filter2);
+        scan.setFilter(filterList);
+        ResultScanner rs = bizTable.getScanner(scan);
+        Result result;
+        while ((result = rs.next()) != null) {
+            System.out.println(result);
+        }
+        rs.close();
     }
 
     /**
